@@ -23,23 +23,28 @@ class ReaderActivity : AppCompatActivity() {
         poemChinese = findViewById(R.id.poem_chinese)
         btnTranslate = findViewById(R.id.btn_translate)
 
-        // 关闭按钮
+        val importedContent = intent.getStringExtra("imported_content")
+        val bookTitle = intent.getStringExtra("book_title")
+        
+        if (!importedContent.isNullOrBlank()) {
+            findViewById<TextView>(R.id.english_text).text = importedContent
+            findViewById<TextView>(R.id.poem_text).visibility = View.GONE
+            poemChinese.visibility = View.GONE
+            title = bookTitle ?: "导入的书籍"
+        }
+
         findViewById<TextView>(R.id.btn_close).setOnClickListener {
             finish()
         }
 
-        // AI 翻译按钮
         btnTranslate.setOnClickListener {
             if (isTranslated) {
-                // 已经翻译过，切换显示/隐藏
                 toggleTranslation()
             } else {
-                // 模拟 AI 翻译过程
                 simulateAITranslation()
             }
         }
 
-        // 底部功能按钮
         findViewById<TextView>(R.id.btn_toc).setOnClickListener {
             Toast.makeText(this, "目录功能开发中", Toast.LENGTH_SHORT).show()
         }
@@ -55,12 +60,10 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     private fun simulateAITranslation() {
-        // 显示翻译中状态
         btnTranslate.text = "..."
         btnTranslate.isEnabled = false
         Toast.makeText(this, "AI 正在翻译...", Toast.LENGTH_SHORT).show()
 
-        // 模拟网络请求延迟（1.2秒）
         Handler(Looper.getMainLooper()).postDelayed({
             isTranslated = true
             chineseText.visibility = View.VISIBLE
